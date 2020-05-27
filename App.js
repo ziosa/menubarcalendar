@@ -12,22 +12,23 @@ import {StyleSheet, View, Text, Linking, Button} from 'react-native';
 
 import {Calendar} from 'react-native-calendars';
 import ColorPalette from 'react-native-color-palette';
-import {Icon} from 'react-native-elements';
+import {Icon, withTheme} from 'react-native-elements';
 
 const App: () => React$Node = () => {
   const [showSettings, setShowSettings] = React.useState(false);
   const [bgTodayColor, setBgTodayColor] = React.useState('rgb(0,122,255)');
+  console.disableYellowBox = true;
 
   const Arrow = ({direction}) => {
-    console.log(direction);
-    if (direction === 'left')
+    if (direction === 'left') {
       return (
         <Icon name="ios-arrow-dropleft" type="ionicon" color={bgTodayColor} />
       );
-    else
+    } else {
       return (
         <Icon name="ios-arrow-dropright" type="ionicon" color={bgTodayColor} />
       );
+    }
   };
   return (
     <View style={styles.body}>
@@ -101,7 +102,12 @@ const App: () => React$Node = () => {
         />
       </View>
       <View style={styles.buttonGithub}>
-        <OpenURLButton url="https://github.com/ziosa" />
+        <OpenURLButton url="https://github.com/ziosa/menubarcalendar" />
+      </View>
+      <View style={styles.madeWithLove}>
+        <Text style={styles.titleText}>Made with </Text>
+        <Icon name="ios-heart" type="ionicon" color="red" size={10} />
+        <Text style={styles.titleText}> by @ziosa</Text>
       </View>
     </View>
   );
@@ -140,6 +146,20 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     padding: 10,
+  },
+  madeWithLove: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'baseline',
+    bottom: 5,
+    left: 140,
+    opacity: 0.5,
+  },
+  titleText: {
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });
 
