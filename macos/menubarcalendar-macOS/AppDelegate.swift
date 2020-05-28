@@ -15,12 +15,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   var statusBarItem: NSStatusItem!
 
   func applicationDidFinishLaunching(_ aNotification: Notification) {
+    NotificationCenter.default.addObserver(self, selector: #selector(updateDateTitle), name: .NSCalendarDayChanged, object: nil)
     let jsCodeLocation: URL
-    let date = Date()
-    let formatter = DateFormatter()
-    formatter.dateFormat = "dd.MM.yyyy"
-
-
     jsCodeLocation = RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource:nil)
     let rootView = RCTRootView(bundleURL: jsCodeLocation, moduleName: "menubarcalendar", initialProperties: nil, launchOptions: nil)
     let rootViewController = NSViewController()
@@ -33,17 +29,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     popover.behavior = .semitransient
     popover.contentViewController = rootViewController
 
-    statusBarItem = NSStatusBar.system.statusItem(withLength: CGFloat(60))
+    statusBarItem = NSStatusBar.system.statusItem(withLength: CGFloat(70))
 
-    if let button = self.statusBarItem.button {
+    if let button = statusBarItem.button {
       button.sendAction(on: [.leftMouseDown, .rightMouseUp])
       button.action = #selector(togglePopover(_:))
-      button.title = formatter.string(from: date)
+      button.title = getFormattedDate()
     }
   }
 
+  @objc func updateDateTitle() {
+    if let button = statusBarItem.button {
+      button.title = getFormattedDate()
+    }
+  }
+
+  @objc func getFormattedDate() -> String {
+    let date = Date()
+    let formatter = DateFormatter()
+    formatter.dateFormat = "dd.MM.yy"
+    return formatter.string(from: date)
+  }
+
   @objc func togglePopover(_ sender: AnyObject?) {
-      let event = NSApp.currentEvent!
+    let event = NSApp.currentEvent!
     if event.type == NSEvent.EventType.rightMouseUp {
         closePopover(sender: nil)
 
@@ -56,7 +65,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusBarItem.button?.performClick(nil)
         statusBarItem.menu = nil
       } else {
-        if let button = self.statusBarItem.button {
+        if let button = statusBarItem.button {
             if self.popover.isShown {
                 self.popover.performClose(sender)
             } else {

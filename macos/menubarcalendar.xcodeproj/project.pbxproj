@@ -36,7 +36,7 @@
 		514201562437B4B40078DB4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		514201592437B4B40078DB4F /* menubarcalendar.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = menubarcalendar.entitlements; sourceTree = "<group>"; };
 		6C328F3D247E5F1800152310 /* menubarcalendar-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "menubarcalendar-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
-		6C328F3E247E5F1800152310 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		6C328F3E247E5F1800152310 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		6CBB92E9247EB65300754EA7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6CE2E1E5247EDEA900157D11 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		9D32DFD059D5DB6DDEF38881 /* Pods-Shared-menubarcalendar-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-menubarcalendar-iOS.debug.xcconfig"; path = "Target Support Files/Pods-Shared-menubarcalendar-iOS/Pods-Shared-menubarcalendar-iOS.debug.xcconfig"; sourceTree = "<group>"; };

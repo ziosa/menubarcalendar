@@ -8,15 +8,24 @@
  */
 
 import React from 'react';
-import {StyleSheet, View, Text, Linking, Button} from 'react-native';
+import {StyleSheet, View, Text, Linking} from 'react-native';
 
 import {Calendar} from 'react-native-calendars';
 import ColorPalette from 'react-native-color-palette';
-import {Icon, withTheme} from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 
 const App: () => React$Node = () => {
   const [showSettings, setShowSettings] = React.useState(false);
   const [bgTodayColor, setBgTodayColor] = React.useState('rgb(0,122,255)');
+  const [today, setToday] = React.useState(new Date());
+  const now = new Date();
+  const delay = 86400000; // 1 day in ms
+  const startDelay =
+    delay -
+    (now.getHours() * 60 * 60 + now.getMinutes() * 60 + now.getSeconds()) *
+      1000 +
+    now.getMilliseconds();
+
   console.disableYellowBox = true;
 
   const Arrow = ({direction}) => {
@@ -30,20 +39,25 @@ const App: () => React$Node = () => {
       );
     }
   };
+
+  React.useEffect(() => {
+    setTimeout(function updateToday() {
+      setToday(new Date());
+      setTimeout(updateToday, delay);
+    }, startDelay);
+
+    return () => clearTimeout();
+  }, []);
+
   return (
-    <View style={styles.body}>
+    <View style={styles.body} key={today}>
       {!showSettings ? (
         <View>
           <Calendar
             renderArrow={direction => <Arrow direction={direction} />}
-            // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
             monthFormat={'MMMM yyyy'}
-            // Hide month navigation arrows. Default = false
             hideArrows={false}
-            // Do not show days of other months in month page. Default = false
             hideExtraDays={true}
-            // If hideArrows=false and hideExtraDays=false do not swich month when tapping on greyed out
-            // day from another month that is visible in calendar page. Default = false
             disableMonthChange={true}
             firstDay={1}
             theme={{
@@ -80,15 +94,7 @@ const App: () => React$Node = () => {
                 '#9B59B6',
                 '#8E44AD',
               ]}
-              title={
-                <Text
-                  style={{
-                    color: 'white',
-                    textAlign: 'center',
-                  }}>
-                  Change color
-                </Text>
-              }
+              title={<Text style={styles.changeColor}>Change color</Text>}
             />
           </View>
         </View>
@@ -160,6 +166,10 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 10,
     fontWeight: 'bold',
+  },
+  changeColor: {
+    color: 'white',
+    textAlign: 'center',
   },
 });
 
