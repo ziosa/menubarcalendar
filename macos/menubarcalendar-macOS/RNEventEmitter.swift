@@ -16,6 +16,6 @@ open class RNEventEmitter: RCTEventEmitter {
   }
 
   open override func supportedEvents() -> [String] {
-    ["onReady"]
+    ["onReady", "updateTodayDate"]
   }
 }

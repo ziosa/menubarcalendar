@@ -16,6 +16,7 @@ import {
   NativeModules,
   NativeEventEmitter,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 
 import {Calendar} from 'react-native-calendars';
@@ -31,23 +32,17 @@ const App: () => React$Node = () => {
   const [today, setToday] = React.useState(new Date());
   const [events, setEvents] = React.useState({
     '0': {
-      endDate: '16:00',
-      startDate: '12:45',
-      eventTitle: 'Andare a fare la spesa',
-      calendarTitle: 'Work',
+      calendarColor: '0,122,255',
+      eventTitle: 'Nothing to do!',
     },
   });
-  const now = new Date();
-  const delay = 86400000; // 1 day in ms
-  const startDelay =
-    delay -
-    (now.getHours() * 60 * 60 + now.getMinutes() * 60 + now.getSeconds()) *
-      1000 +
-    now.getMilliseconds();
 
   RTVEventEmitter.addListener('onReady', result => {
-    console.log(result);
     setEvents(result.data);
+  });
+
+  RTVEventEmitter.addListener('updateTodayDate', () => {
+    setToday(new Date().toString());
   });
 
   console.disableYellowBox = true;
@@ -64,13 +59,15 @@ const App: () => React$Node = () => {
     }
   };
 
-  React.useEffect(() => {
-    setTimeout(function updateToday() {
-      setToday(new Date().toString());
-      setTimeout(updateToday, delay);
-    }, startDelay);
-  }, []);
-
+  const circle = function(color) {
+    return {
+      top: 14,
+      width: 10,
+      height: 10,
+      borderRadius: 100 / 2,
+      backgroundColor: `rgb(${color})`,
+    };
+  };
   return (
     <View style={styles.body}>
       {!showSettings ? (
@@ -104,17 +101,32 @@ const App: () => React$Node = () => {
             }}
           />
           {events && (
-            <ScrollView>
+            <ScrollView
+              style={styles.scrollViewEvents}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}>
               <View style={styles.todayEvents}>
                 <Text style={styles.todayText}>Today events:</Text>
                 {Object.values(events).map(event => (
-                  <Text
-                    style={{
-                      color: 'gray',
-                    }}>
-                    <Text>{event.calendarTitle}: </Text>
-                    <Text>{event.eventTitle}</Text>
-                  </Text>
+                  <View>
+                    <View style={circle(event.calendarColor)} />
+                    <Text
+                      style={{
+                        paddingLeft: 15,
+                        textAlign: 'left',
+                        color: 'gray',
+                      }}>
+                      {event.eventTitle}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 25,
+                        padding: 15,
+                        textAlign: 'center',
+                      }}>
+                      &#128640;
+                    </Text>
+                  </View>
                 ))}
               </View>
             </ScrollView>
@@ -211,15 +223,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   todayEvents: {
+    borderColor: 'rgb(31,32,35)',
+    backgroundColor: 'rgb(31,32,35)',
+    borderWidth: 2,
+    borderRadius: 5,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    height: 400,
+    minHeight: 240,
   },
   todayText: {
     fontSize: 20,
     color: 'white',
     padding: 10,
+  },
+  scrollViewEvents: {
+    height: 240,
+    overflow: 'hidden',
   },
 });
 

@@ -18,7 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   var rootView: RCTRootView!
   
   func applicationDidFinishLaunching(_ aNotification: Notification) {
-    NotificationCenter.default.addObserver(self, selector: #selector(updateDateTitle), name: .NSCalendarDayChanged, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(updateTodayDate), name: .NSCalendarDayChanged, object: nil)
     let jsCodeLocation: URL
     jsCodeLocation = RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource:nil)
     rootView = RCTRootView(bundleURL: jsCodeLocation, moduleName: "menubarcalendar", initialProperties: nil, launchOptions: nil)
@@ -45,16 +45,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         var result = [Int: Any]()
         let calendars = self.eventStore.calendars(for: .event)
         for calendar in calendars {
-          let oneMonthAgo = NSDate(timeIntervalSinceNow: -30*24*3600)
-          let oneMonthAfter = NSDate(timeIntervalSinceNow: +30*24*3600)
-          let predicate = self.eventStore.predicateForEvents(withStart: oneMonthAgo as Date, end: oneMonthAfter as Date, calendars: [calendar])
+          let startDate = Date()
+          let endDate = NSDate(timeIntervalSinceNow: 24*60*60)
+          let predicate = self.eventStore.predicateForEvents(withStart: startDate, end: endDate as Date, calendars: [calendar])
           let events = self.eventStore.events(matching: predicate)
           for (index,event) in events.enumerated() {
             result.updateValue([
               "calendarTitle": calendar.title,
-                "eventTitle": event.title,
-                "startDate": "12:45",
-                "endDate": "16:00"
+              "eventTitle": event.title,
+              "calendarColor": self.getColorString(color: calendar.color)
             ], forKey: index);
           }
         }
@@ -84,7 +83,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
   }
   
-  @objc func updateDateTitle() {
+  @objc func updateTodayDate() {
+    RNEventEmitter.emitter.sendEvent(withName: "updateTodayDate", body: [])
     if let button = statusBarItem.button {
       button.title = getFormattedDate()
     }
@@ -125,6 +125,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   
   func closePopover(sender: AnyObject?) {
     popover.performClose(sender)
+  }
+  
+  func getColorString(color: NSColor) -> String {
+    let color = color.usingColorSpace(NSColorSpace.extendedSRGB) ?? color
+    print("red: \(color.redComponent) green:\(color.greenComponent) blue:\(color.blueComponent)")
+    
+    return "\(color.redComponent * 255),\(color.greenComponent * 255),\(color.blueComponent * 255)";
   }
   
 }
