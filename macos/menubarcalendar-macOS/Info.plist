@@ -49,5 +49,7 @@
 	<true/>
 	<key>ATSApplicationFontsPath</key>
 	<string>Fonts</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Request access to Calender App</string>
 </dict>
 </plist>

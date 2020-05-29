@@ -8,16 +8,35 @@
  */
 
 import React from 'react';
-import {StyleSheet, View, Text, Linking} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Linking,
+  NativeModules,
+  NativeEventEmitter,
+  ScrollView,
+} from 'react-native';
 
 import {Calendar} from 'react-native-calendars';
 import ColorPalette from 'react-native-color-palette';
 import {Icon} from 'react-native-elements';
 
 const App: () => React$Node = () => {
+  const RNEventEmitter = NativeModules.RNEventEmitter;
+  const RTVEventEmitter = new NativeEventEmitter(RNEventEmitter);
+
   const [showSettings, setShowSettings] = React.useState(false);
   const [bgTodayColor, setBgTodayColor] = React.useState('rgb(0,122,255)');
   const [today, setToday] = React.useState(new Date());
+  const [events, setEvents] = React.useState({
+    '0': {
+      endDate: '16:00',
+      startDate: '12:45',
+      eventTitle: 'Andare a fare la spesa',
+      calendarTitle: 'Work',
+    },
+  });
   const now = new Date();
   const delay = 86400000; // 1 day in ms
   const startDelay =
@@ -25,6 +44,11 @@ const App: () => React$Node = () => {
     (now.getHours() * 60 * 60 + now.getMinutes() * 60 + now.getSeconds()) *
       1000 +
     now.getMilliseconds();
+
+  RTVEventEmitter.addListener('onReady', result => {
+    console.log(result);
+    setEvents(result.data);
+  });
 
   console.disableYellowBox = true;
 
@@ -42,18 +66,17 @@ const App: () => React$Node = () => {
 
   React.useEffect(() => {
     setTimeout(function updateToday() {
-      setToday(new Date());
+      setToday(new Date().toString());
       setTimeout(updateToday, delay);
     }, startDelay);
-
-    return () => clearTimeout();
   }, []);
 
   return (
-    <View style={styles.body} key={today}>
+    <View style={styles.body}>
       {!showSettings ? (
         <View>
           <Calendar
+            key={today}
             renderArrow={direction => <Arrow direction={direction} />}
             monthFormat={'MMMM yyyy'}
             hideArrows={false}
@@ -80,6 +103,22 @@ const App: () => React$Node = () => {
               textDayHeaderFontSize: 16,
             }}
           />
+          {events && (
+            <ScrollView>
+              <View style={styles.todayEvents}>
+                <Text style={styles.todayText}>Today events:</Text>
+                {Object.values(events).map(event => (
+                  <Text
+                    style={{
+                      color: 'gray',
+                    }}>
+                    <Text>{event.calendarTitle}: </Text>
+                    <Text>{event.eventTitle}</Text>
+                  </Text>
+                ))}
+              </View>
+            </ScrollView>
+          )}
         </View>
       ) : (
         <View>
@@ -139,7 +178,7 @@ const OpenURLButton = ({url}) => {
 
 const styles = StyleSheet.create({
   body: {
-    height: 400,
+    height: 600,
   },
   buttonSettings: {
     position: 'absolute',
@@ -170,6 +209,17 @@ const styles = StyleSheet.create({
   changeColor: {
     color: 'white',
     textAlign: 'center',
+  },
+  todayEvents: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    height: 400,
+  },
+  todayText: {
+    fontSize: 20,
+    color: 'white',
+    padding: 10,
   },
 });
 

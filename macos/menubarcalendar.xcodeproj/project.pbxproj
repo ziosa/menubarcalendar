@@ -15,6 +15,8 @@
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 		6C328F3F247E5F1800152310 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C328F3E247E5F1800152310 /* AppDelegate.swift */; };
 		6CBB92EA247EB65300754EA7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6CBB92E9247EB65300754EA7 /* Assets.xcassets */; };
+		6CD63D832481371A0038EC42 /* RNEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6CD63D822481371A0038EC42 /* RNEventEmitter.m */; };
+		6CD63D8524813CF00038EC42 /* RNEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD63D8424813CF00038EC42 /* RNEventEmitter.swift */; };
 		6CE2E1E4247EDE6500157D11 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 514201562437B4B40078DB4F /* Info.plist */; };
 		6CE2E1E6247EDEA900157D11 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 6CE2E1E5247EDEA900157D11 /* Fonts */; };
 		B5C72D9C27A1E1D711C050EF /* libPods-Shared-menubarcalendar-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB6EED1BDEABADF047CC5223 /* libPods-Shared-menubarcalendar-iOS.a */; };
@@ -38,6 +40,8 @@
 		6C328F3D247E5F1800152310 /* menubarcalendar-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "menubarcalendar-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		6C328F3E247E5F1800152310 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		6CBB92E9247EB65300754EA7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6CD63D822481371A0038EC42 /* RNEventEmitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNEventEmitter.m; sourceTree = "<group>"; };
+		6CD63D8424813CF00038EC42 /* RNEventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNEventEmitter.swift; sourceTree = "<group>"; };
 		6CE2E1E5247EDEA900157D11 /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fonts; sourceTree = "<group>"; };
 		9D32DFD059D5DB6DDEF38881 /* Pods-Shared-menubarcalendar-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-menubarcalendar-iOS.debug.xcconfig"; path = "Target Support Files/Pods-Shared-menubarcalendar-iOS/Pods-Shared-menubarcalendar-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		A82DFB63B157C65E5D698CA2 /* Pods-Shared-menubarcalendar-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared-menubarcalendar-iOS.release.xcconfig"; path = "Target Support Files/Pods-Shared-menubarcalendar-iOS/Pods-Shared-menubarcalendar-iOS.release.xcconfig"; sourceTree = "<group>"; };
@@ -115,6 +119,8 @@
 				514201592437B4B40078DB4F /* menubarcalendar.entitlements */,
 				6C328F3E247E5F1800152310 /* AppDelegate.swift */,
 				6C328F3D247E5F1800152310 /* menubarcalendar-macOS-Bridging-Header.h */,
+				6CD63D822481371A0038EC42 /* RNEventEmitter.m */,
+				6CD63D8424813CF00038EC42 /* RNEventEmitter.swift */,
 			);
 			path = "menubarcalendar-macOS";
 			sourceTree = "<group>";
@@ -384,6 +390,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C328F3F247E5F1800152310 /* AppDelegate.swift in Sources */,
+				6CD63D8524813CF00038EC42 /* RNEventEmitter.swift in Sources */,
+				6CD63D832481371A0038EC42 /* RNEventEmitter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
