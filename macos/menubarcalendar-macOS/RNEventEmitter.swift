@@ -7,6 +7,7 @@
 
 @objc(RNEventEmitter)
 open class RNEventEmitter: RCTEventEmitter {
+  var calendarService : CalendarService = CalendarService()
 
   public static var emitter: RCTEventEmitter!
 
@@ -16,6 +17,11 @@ open class RNEventEmitter: RCTEventEmitter {
   }
 
   open override func supportedEvents() -> [String] {
-    ["onReady", "updateTodayDate"]
+    ["onReceiveCalendarEvents", "updateTodayDate"]
   }
+  
+  @objc func getCalendarEvents(){
+    calendarService.getCalendarEvents()
+  }
+  
 }

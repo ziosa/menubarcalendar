@@ -7,15 +7,14 @@
 
 import Foundation
 import Cocoa
-import EventKit
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
   var popover: NSPopover!
   var bridge: RCTBridge!
   var statusBarItem: NSStatusItem!
-  var eventStore = EKEventStore()
   var rootView: RCTRootView!
+  
   
   func applicationDidFinishLaunching(_ aNotification: Notification) {
     NotificationCenter.default.addObserver(self, selector: #selector(updateTodayDate), name: .NSCalendarDayChanged, object: nil)
@@ -38,48 +37,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       button.sendAction(on: [.leftMouseDown, .rightMouseUp])
       button.action = #selector(togglePopover(_:))
       button.title = getFormattedDate()
-    }
-    get_estore_permission {
-      permission in
-      if permission {
-        var result = [Int: Any]()
-        let calendars = self.eventStore.calendars(for: .event)
-        for calendar in calendars {
-          let startDate = Date()
-          let endDate = NSDate(timeIntervalSinceNow: 24*60*60)
-          let predicate = self.eventStore.predicateForEvents(withStart: startDate, end: endDate as Date, calendars: [calendar])
-          let events = self.eventStore.events(matching: predicate)
-          for (index,event) in events.enumerated() {
-            result.updateValue([
-              "calendarTitle": calendar.title,
-              "eventTitle": event.title,
-              "calendarColor": self.getColorString(color: calendar.color)
-            ], forKey: index);
-          }
-        }
-        RNEventEmitter.emitter.sendEvent(withName: "onReady", body: ["data": result])
-      }
-    }
-  }
-  
-  
-  func get_estore_permission(completed: @escaping (Bool) -> Void) {
-    switch EKEventStore.authorizationStatus(for: .event) {
-    case .authorized:
-      print("Access")
-    case .denied:
-      print("Access denied")
-    case .notDetermined:
-      eventStore.requestAccess(to: .event, completion:
-        {[weak self] (granted: Bool, error: Error?) -> Void in
-          if granted {
-            completed(true)
-          } else {
-            print("Access denied")
-          }
-      })
-    default:
-      print("Case default")
     }
   }
   
@@ -125,13 +82,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   
   func closePopover(sender: AnyObject?) {
     popover.performClose(sender)
-  }
-  
-  func getColorString(color: NSColor) -> String {
-    let color = color.usingColorSpace(NSColorSpace.extendedSRGB) ?? color
-    print("red: \(color.redComponent) green:\(color.greenComponent) blue:\(color.blueComponent)")
-    
-    return "\(color.redComponent * 255),\(color.greenComponent * 255),\(color.blueComponent * 255)";
   }
   
 }

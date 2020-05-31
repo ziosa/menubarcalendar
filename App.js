@@ -16,7 +16,6 @@ import {
   NativeModules,
   NativeEventEmitter,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
 
 import {Calendar} from 'react-native-calendars';
@@ -30,20 +29,24 @@ const App: () => React$Node = () => {
   const [showSettings, setShowSettings] = React.useState(false);
   const [bgTodayColor, setBgTodayColor] = React.useState('rgb(0,122,255)');
   const [today, setToday] = React.useState(new Date());
-  const [events, setEvents] = React.useState({
-    '0': {
-      calendarColor: '0,122,255',
-      eventTitle: 'Nothing to do!',
-    },
-  });
+  const [events, setEvents] = React.useState();
 
-  RTVEventEmitter.addListener('onReady', result => {
-    setEvents(result.data);
-  });
+  React.useEffect(() => {
+    RTVEventEmitter.addListener('onReceiveCalendarEvents', result => {
+      setEvents(result.data);
+    });
 
-  RTVEventEmitter.addListener('updateTodayDate', () => {
-    setToday(new Date().toString());
-  });
+    RTVEventEmitter.addListener('updateTodayDate', () => {
+      setToday(new Date().toString());
+    });
+
+    RNEventEmitter.getCalendarEvents();
+
+    return () => {
+      RTVEventEmitter.removeListener('onReady');
+      RTVEventEmitter.removeListener('updateTodayDate');
+    };
+  }, []);
 
   console.disableYellowBox = true;
 
@@ -100,7 +103,7 @@ const App: () => React$Node = () => {
               textDayHeaderFontSize: 16,
             }}
           />
-          {events && (
+          {events ? (
             <ScrollView
               style={styles.scrollViewEvents}
               showsVerticalScrollIndicator={false}
@@ -118,16 +121,35 @@ const App: () => React$Node = () => {
                       }}>
                       {event.eventTitle}
                     </Text>
-                    <Text
-                      style={{
-                        fontSize: 25,
-                        padding: 15,
-                        textAlign: 'center',
-                      }}>
-                      &#128640;
-                    </Text>
                   </View>
                 ))}
+              </View>
+            </ScrollView>
+          ) : (
+            <ScrollView
+              style={styles.scrollViewEvents}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}>
+              <View style={styles.todayEvents}>
+                <Text style={styles.todayText}>Today events:</Text>
+                <View>
+                  <Text
+                    style={{
+                      textAlign: 'left',
+                      color: 'gray',
+                    }}>
+                    {' '}
+                    Nothing to do!
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      padding: 15,
+                      textAlign: 'center',
+                    }}>
+                    &#128640;
+                  </Text>
+                </View>
               </View>
             </ScrollView>
           )}
