@@ -6,3 +6,8 @@ The Missing macOS App
 ![](menubarcalendar.gif)
 
 
+#Credits
+
+https://gist.github.com/brennanMKE/1ebba84a0fd7c2e8b481e4f8a5349b99#file-eventemitter-swift
+
+

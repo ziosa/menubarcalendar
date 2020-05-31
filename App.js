@@ -8,23 +8,45 @@
  */
 
 import React from 'react';
-import {StyleSheet, View, Text, Linking} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Linking,
+  NativeModules,
+  NativeEventEmitter,
+  ScrollView,
+} from 'react-native';
 
 import {Calendar} from 'react-native-calendars';
 import ColorPalette from 'react-native-color-palette';
 import {Icon} from 'react-native-elements';
 
 const App: () => React$Node = () => {
+  const RNEventEmitter = NativeModules.RNEventEmitter;
+  const RTVEventEmitter = new NativeEventEmitter(RNEventEmitter);
+
   const [showSettings, setShowSettings] = React.useState(false);
   const [bgTodayColor, setBgTodayColor] = React.useState('rgb(0,122,255)');
   const [today, setToday] = React.useState(new Date());
-  const now = new Date();
-  const delay = 86400000; // 1 day in ms
-  const startDelay =
-    delay -
-    (now.getHours() * 60 * 60 + now.getMinutes() * 60 + now.getSeconds()) *
-      1000 +
-    now.getMilliseconds();
+  const [events, setEvents] = React.useState();
+
+  React.useEffect(() => {
+    RTVEventEmitter.addListener('onReceiveCalendarEvents', result => {
+      setEvents(result.data);
+    });
+
+    RTVEventEmitter.addListener('updateTodayDate', () => {
+      setToday(new Date().toString());
+    });
+
+    RNEventEmitter.getCalendarEvents();
+
+    return () => {
+      RTVEventEmitter.removeListener('onReady');
+      RTVEventEmitter.removeListener('updateTodayDate');
+    };
+  }, []);
 
   console.disableYellowBox = true;
 
@@ -40,20 +62,21 @@ const App: () => React$Node = () => {
     }
   };
 
-  React.useEffect(() => {
-    setTimeout(function updateToday() {
-      setToday(new Date());
-      setTimeout(updateToday, delay);
-    }, startDelay);
-
-    return () => clearTimeout();
-  }, []);
-
+  const circle = function(color) {
+    return {
+      top: 14,
+      width: 10,
+      height: 10,
+      borderRadius: 100 / 2,
+      backgroundColor: `rgb(${color})`,
+    };
+  };
   return (
-    <View style={styles.body} key={today}>
+    <View style={styles.body}>
       {!showSettings ? (
         <View>
           <Calendar
+            key={today}
             renderArrow={direction => <Arrow direction={direction} />}
             monthFormat={'MMMM yyyy'}
             hideArrows={false}
@@ -80,6 +103,56 @@ const App: () => React$Node = () => {
               textDayHeaderFontSize: 16,
             }}
           />
+          {events ? (
+            <ScrollView
+              style={styles.scrollViewEvents}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}>
+              <View style={styles.todayEvents}>
+                <Text style={styles.todayText}>Today events:</Text>
+                {Object.values(events).map(event => (
+                  <View>
+                    <View style={circle(event.calendarColor)} />
+                    <Text
+                      style={{
+                        paddingLeft: 15,
+                        textAlign: 'left',
+                        color: 'gray',
+                      }}>
+                      {event.eventTitle}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          ) : (
+            <ScrollView
+              style={styles.scrollViewEvents}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}>
+              <View style={styles.todayEvents}>
+                <Text style={styles.todayText}>Today events:</Text>
+                <View>
+                  <Text
+                    style={{
+                      textAlign: 'left',
+                      color: 'gray',
+                    }}>
+                    {' '}
+                    Nothing to do!
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                      padding: 15,
+                      textAlign: 'center',
+                    }}>
+                    &#128640;
+                  </Text>
+                </View>
+              </View>
+            </ScrollView>
+          )}
         </View>
       ) : (
         <View>
@@ -139,7 +212,7 @@ const OpenURLButton = ({url}) => {
 
 const styles = StyleSheet.create({
   body: {
-    height: 400,
+    height: 600,
   },
   buttonSettings: {
     position: 'absolute',
@@ -170,6 +243,25 @@ const styles = StyleSheet.create({
   changeColor: {
     color: 'white',
     textAlign: 'center',
+  },
+  todayEvents: {
+    borderColor: 'rgb(31,32,35)',
+    backgroundColor: 'rgb(31,32,35)',
+    borderWidth: 2,
+    borderRadius: 5,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    minHeight: 240,
+  },
+  todayText: {
+    fontSize: 20,
+    color: 'white',
+    padding: 10,
+  },
+  scrollViewEvents: {
+    height: 240,
+    overflow: 'hidden',
   },
 });
 
