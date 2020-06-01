@@ -103,7 +103,7 @@ const App: () => React$Node = () => {
               textDayHeaderFontSize: 16,
             }}
           />
-          {events ? (
+          {events && events.length > 0 ? (
             <ScrollView
               style={styles.scrollViewEvents}
               showsVerticalScrollIndicator={false}

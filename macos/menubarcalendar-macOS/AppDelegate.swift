@@ -14,8 +14,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   var bridge: RCTBridge!
   var statusBarItem: NSStatusItem!
   var rootView: RCTRootView!
-  
-  
+    
   func applicationDidFinishLaunching(_ aNotification: Notification) {
     NotificationCenter.default.addObserver(self, selector: #selector(updateTodayDate), name: .NSCalendarDayChanged, object: nil)
     let jsCodeLocation: URL
@@ -42,8 +41,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   
   @objc func updateTodayDate() {
     RNEventEmitter.emitter.sendEvent(withName: "updateTodayDate", body: [])
-    if let button = statusBarItem.button {
-      button.title = getFormattedDate()
+    DispatchQueue.main.async { // Correct
+      if let button = self.statusBarItem.button {
+        button.title = self.getFormattedDate()
+       }
     }
   }
   

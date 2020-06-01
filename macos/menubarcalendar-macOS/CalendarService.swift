@@ -12,7 +12,8 @@ class CalendarService {
   var eventStore = EKEventStore()
 
   init() {
-      NotificationCenter.default.addObserver(self, selector: #selector(getCalendarEvents), name: .EKEventStoreChanged, object: self.eventStore)
+    NotificationCenter.default.addObserver(self, selector: #selector(getCalendarEvents), name: .EKEventStoreChanged, object: self.eventStore)
+    NotificationCenter.default.addObserver(self, selector: #selector(getCalendarEvents), name: .NSCalendarDayChanged, object: nil)
   }
     
   @objc func getCalendarEvents(){
@@ -49,9 +50,11 @@ class CalendarService {
     var result: [Any] = []
     let calendars = self.eventStore.calendars(for: .event)
     for calendar in calendars {
-      let startDate = NSDate(timeIntervalSinceNow: -24*60*60)
-      let endDate = NSDate(timeIntervalSinceNow: 24*60*60)
-      let predicate = self.eventStore.predicateForEvents(withStart: startDate as Date, end: endDate as Date, calendars: [calendar])
+      let now = Date()
+      let gregorianCalendar = Calendar(identifier: .gregorian)
+      let startDate = gregorianCalendar.date(bySettingHour: 0, minute: 0, second: 0, of: now)
+      let endDate = gregorianCalendar.date(bySettingHour: 23, minute: 59, second: 59, of: now)
+      let predicate = self.eventStore.predicateForEvents(withStart: startDate!, end: endDate!, calendars: [calendar])
       let events = self.eventStore.events(matching: predicate)
       for event in events {
         result.append([
