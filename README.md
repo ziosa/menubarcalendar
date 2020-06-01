@@ -1,7 +1,7 @@
 # menubarcalendar
 The Missing macOS App 
 
-[![button](mac-download-button.png)](https://github.com/ziosa/menubarcalendar/releases/download/v1.1.0/menubarcalendar-1.1.0.dmg)
+[![button](mac-download-button.png)](https://github.com/ziosa/menubarcalendar/releases/download/v1.1.1/menubarcalendar-1.1.1.dmg)
 
 ![](menubarcalendar.gif)
 
